@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OC Transpo Final Mock Exam Quiz</title>
+<style>
+:root{
+  --bg:#f5f6f8;--card:#fff;--text:#1b1f27;--muted:#5d6676;--line:#dde1e8;
+  --brand:#c8102e;--brand-d:#a00d25;--ok:#1a7f4b;--okbg:#e4f5ec;--bad:#b3261e;--badbg:#fdeceb;--warn:#a85d00;--warnbg:#fff3e0;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#14171c;--card:#1d2128;--text:#eceff4;--muted:#9aa4b5;--line:#2e3440;
+  --brand:#ef4660;--brand-d:#d93350;--ok:#4cc88a;--okbg:#17352a;--bad:#ff8b84;--badbg:#3a1d1c;--warn:#ffb85c;--warnbg:#3a2b12}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--brand);color:#fff;padding:14px 16px}
+header .in{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{font-size:1.05rem;margin:0;font-weight:700}
+header button{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.85rem}
+main{max-width:760px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+h2{margin:0 0 6px;font-size:1.25rem}
+h3{margin:0 0 8px;font-size:1.05rem}
+p.muted,.muted{color:var(--muted)}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-size:1rem;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--brand-d)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sec{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.sec:hover{background:var(--bg)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:12px 0}
+.mode{border:2px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;background:var(--card);text-align:left;color:var(--text);font:inherit}
+.mode b{display:block}
+.mode.on{border-color:var(--brand);background:var(--bg)}
+.chlist{display:grid;gap:6px;margin:10px 0}
+.chlist label{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.chlist label .st{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+.chlist input{width:18px;height:18px;accent-color:var(--brand)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--brand);transition:width .25s}
+.qmeta{display:flex;justify-content:space-between;gap:8px;font-size:.85rem;color:var(--muted);margin-bottom:8px}
+.qtext{font-size:1.1rem;font-weight:600;margin:12px 0;white-space:pre-line}
+.opt{display:flex;gap:12px;width:100%;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;font:inherit}
+.opt:hover:not(:disabled){border-color:var(--brand)}
+.opt .l{font-weight:700;min-width:1.4em}
+.opt.sel{border-color:var(--brand);background:var(--bg)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.fb{padding:10px 12px;border-radius:10px;margin:10px 0;font-weight:600}
+.fb.ok{background:var(--okbg);color:var(--ok)}
+.fb.no{background:var(--badbg);color:var(--bad)}
+.score{font-size:2.6rem;font-weight:800;line-height:1}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700}
+.pill.hi{background:var(--badbg);color:var(--bad)}
+.pill.md{background:var(--warnbg);color:var(--warn)}
+.pill.lo{background:var(--okbg);color:var(--ok)}
+.chrow{padding:10px 0;border-top:1px solid var(--line)}
+.chrow:first-child{border-top:0}
+.chrow .top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.rev .a{font-size:.92rem;margin-top:4px}
+select{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+.sw{display:flex;gap:8px;align-items:center;margin:10px 0}
+.sw input{width:18px;height:18px;accent-color:var(--brand)}
+.hint{font-size:.8rem;color:var(--muted);margin-top:10px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header><div class="in"><h1>OC Transpo Final Mock Exam Quiz</h1><button id="homeBtn" class="hidden">Home</button></div></header>
+<main id="app"></main>
+
+<script>
+/* ============ QUESTION DATA (from the supplied mock exam and answer key) ============ */
+// Each question: [question text, [option A, B, C, D], correct letter]
+const CHAPTERS = [
+{name:"Accessible Transit", qs:[
+["At a stop without a curb, or when the bus is more than one stair-tread width from the curb, the operator should:",["Keep the bus at normal height","Lower the bus","Open only the rear door","Ask the customer to wait"],"B"],
+["If you sense that a person may require assistance, the best opening question is:",["What is your disability?","Do you need a wheelchair?","How may I help you?","Can your companion help?"],"C"],
+["When cooperative seating is needed, the operator should first:",["Order a specific customer to move","Make a general request to the seating area","Use the PA to identify the person","Refuse boarding"],"B"],
+["Why should the bus remain stopped until a customer using cooperative seating is settled?",["To protect the fare box","To avoid delaying traffic","To prevent a fall or injury","To reset the ramp"],"C"],
+["When speaking with a customer accompanied by a support person, speak primarily to:",["The support person","Control","The customer","Whoever speaks first"],"C"],
+["Which is appropriate person-first language?",["Wheelchair-bound passenger","Handicapped person","Person who uses a wheelchair","Invalid passenger"],"C"],
+["Before guiding a customer with vision loss, you should:",["Take their hand","Ask whether they wish to be guided","Push from behind","Speak to their guide dog"],"B"],
+["When giving directions to a customer with vision loss, which wording is best?",["Over there","Follow everyone","Two steps behind you and one metre left","Point toward the door"],"C"],
+["A service animal should be treated as:",["A pet that may be greeted","A working animal that should not be distracted","Fare media","An operator responsibility"],"B"],
+["When communicating with a customer who is hard of hearing, the operator should:",["Shout","Cover the mouth to reduce distraction","Move to a well-lit area and face the customer","Assume they read lips"],"C"],
+["If pen and paper are used with a Deaf customer, patience is important because:",["Writing is prohibited on buses","ASL may be their first language with its own grammar","They cannot read","Only an interpreter may answer"],"B"],
+["Before touching or moving an assistive device, the operator must:",["Ask permission","Call police","Remove its owner","Apply the spring brake only"],"A"],
+["For a customer with an intellectual or developmental disability, a useful method is to:",["Give all instructions at once","Use complex terminology","Give one piece of information at a time","Speak only to the companion"],"C"],
+["If you do not understand a customer with a speech impairment, you should:",["Finish the sentence","Pretend to understand","Ask the customer to repeat it and allow time","Ignore the request"],"C"]
+]},
+{name:"Assault Prevention", qs:[
+["In the ALERT safety model, the letter R means:",["Retreat immediately","Report hazards, accidents, incidents, or potentially harmful circumstances","Refuse all service","Remove customers"],"B"],
+["Which body language is least threatening?",["Crossed arms","Hidden hands","Relaxed shoulders and visible hands","A tense posture"],"C"],
+["\"Inform, never enforce\" means the operator should:",["Explain requirements without physically compelling compliance","Ignore all rules","Detain fare evaders","Follow customers who leave"],"A"],
+["If someone tries to leave the scene, the operator should:",["Chase them","Block the exit","Avoid going after them","Grab their clothing"],"C"],
+["A verbal \"tug-of-war\" should be handled by:",["Winning the argument","Redirecting to the issue and refusing the invitation to argue","Raising your voice","Leaving the seat to confront the person"],"B"],
+["If a customer makes threats, the operator should:",["Treat them as a joke","Take them seriously and report appropriately","Intervene alone","Wait until the end of shift"],"B"],
+["In an emergency assault situation when ordinary radio communication is not suitable, use:",["The EA","MSG 5","The fare printer","The kneeling switch"],"A"]
+]},
+{name:"Bus Orientation", qs:[
+["What should be adjusted first when setting up the driving position?",["Mirrors","Seat","Steering wheel","Fare box"],"B"],
+["A correctly adjusted seat allows the right foot to fully depress the brake while:",["The heel rests on the heel plate","The leg remains straight","The hip is below the floor","The left foot cannot reach signals"],"A"],
+["The steering wheel should be held with:",["One hand inside the wheel","Both hands outside, thumbs up, arms bent","Locked elbows","Hands fixed at 10 and 2 only"],"B"],
+["Under the 1/4 mirror rule, no more than one quarter of a side mirror should show:",["The road only","The bus side or area above the horizon","The rear door","The operator"],"B"],
+["During a turn, the rear wheels generally travel:",["Outside the front-wheel path","On the same path","Inside the front-wheel path","Straight ahead"],"C"],
+["The best visual technique for staying centred while travelling straight is to:",["Watch the curb continuously","Look well ahead","Watch only the left mirror","Follow lane markings beside the bus"],"B"],
+["Before entering a curve, the operator should:",["Accelerate","Slow down and drive toward the outside while looking inside","Drive toward the inside","Ignore rear-wheel tracking"],"B"],
+["On a standard right-turn approach, the bus is positioned approximately:",["One foot from the curb","One metre over the centre line","In the left lane","Against the curb"],"A"],
+["The \"belly loop\" creates:",["A tight left turn","A pie-shaped protective wedge between bus and curb","A bus bay","A rear-door zone"],"B"],
+["The normal right-turn pivot point is reached when:",["The rear door reaches the corner","The front bumper reaches the road being entered","The operator reaches the crosswalk","The rear wheel touches the curb"],"B"],
+["When turning right from multiple through lanes, if there is no safe gap for the belly loop, the operator should:",["Keep creeping forward","Stop and wait for space","Mount the curb","Turn from the right lane without adjustment"],"B"],
+["For a left turn using multiple turn lanes, the bus should begin in the:",["Inside/left-most lane","Outside/right-most turn lane","Shoulder","Oncoming lane"],"B"]
+]},
+{name:"Clever Devices / TCH", qs:[
+["Automatic TCH logon is mandatory when leaving the garage, taking over a new run, or:",["Passing a timepoint","Taking over a new bus","Opening the rear doors","Entering a bus bay"],"B"],
+["After two failed automatic logon attempts, the system:",["Shuts down the bus","Forces manual-mode logon","Calls police","Prints a transfer"],"B"],
+["If the TCH does not prompt for an EA test, the operator should:",["Press EA anyway","Not press EA","Test it twice","Log off"],"B"],
+["A successful EA test automatically changes the radio to:",["TG 1","TG 4","TG 8","The assigned TG"],"C"],
+["Manual logon should normally be used only when the bus has not signed into the trip one minute before start time or:",["The operator prefers it","Control advises it","The doors are open","The route is frequent"],"B"],
+["Operators must log out at relief points, bus changes, and:",["Every timepoint","When parking at the garage","Every service stop","Lunch only"],"B"],
+["To unlock a locked TCH, enter the operator ID and:",["Repeat the first digit","Repeat the last digit","Add zero","Enter the route number"],"B"],
+["Manual destination-sign control changes:",["Both sign and next-stop announcements","Only the destination sign","Only the announcements","The paddle"],"B"],
+["The map displays automatically above:",["7 km/h","10 km/h","16 km/h","30 km/h"],"C"],
+["A pre-defined message may be accessed only when:",["The bus is stopped","The bus exceeds 16 km/h","The radio works normally","The doors are closed"],"A"],
+["After EA is sent, a period instead of the time colon means the signal was sent; a dash in the date means:",["The network failed","Control received the EA","The EA was cancelled","Manual mode began"],"B"]
+]},
+{name:"Defect Reporting and SIR", qs:[
+["The first action after discovering any bus defect is to:",["Fill out a card","Notify Control with MSG 4 or MSG 5","Tell the dispatcher later","Submit an SIR"],"B"],
+["MSG 4 is used for:",["A minor defect allowing continued service","A major problem where the bus cannot continue","Fare disputes","Overloads"],"B"],
+["MSG 5 is used for:",["Minor mechanical problems where the bus can continue","Emergencies only","Route changes","Hours-of-service violations"],"A"],
+["A completed Defect Card is handed to the:",["First customer","Bus starter/placer","Planning department","Police officer"],"B"],
+["The operator keeps which copy of the Defect Card?",["White","Pink","Yellow","No copy"],"C"],
+["If relieved on the street after reporting a defect, the operator should tell the relief operator:",["Nothing","The defect and location of the Defect Card","Only the route number","To submit an SIR"],"B"],
+["At Industrial Garage, after reporting a minor defect with MSG 5, the operator normally:",["Proceeds to the first trip","Parks at door P2","Goes home","Calls police"],"A"],
+["When meeting a service truck away from a service-stop area, the operator should:",["Drive up to it in the roadway","Park in a designated safe space and let the technician come to the bus","Block traffic","Open all doors"],"B"],
+["An SIR is most appropriate for:",["A major brake failure","A scheduling, overload, stop, routing, or service-delivery issue","A passenger medical emergency","An EA test"],"B"],
+["Before submitting an SIR, an operator should normally discuss the issue with:",["A customer","A supervisor or Control","Another bus operator only","Fleet Maintenance only"],"B"],
+["Except for safety concerns, SIRs should not be submitted during:",["The final 14 days of a booking","The first 14 days of a booking","Weekends","Peak hours"],"B"],
+["For one continuing issue, the operator should submit:",["One SIR per trip","One SIR per day","One detailed SIR","No SIR"],"C"]
+]},
+{name:"Defensive Driving Part 1", qs:[
+["Defensive driving means preventing collisions despite:",["Schedule pressure only","Others' actions and surrounding conditions","Weather only","Mechanical defects only"],"B"],
+["The Standard Collision Prevention Formula is:",["Stop, look, listen","Recognize the hazard, understand the defence, act in time","Scan, signal, speed","Know, show, slow"],"B"],
+["Minimum eye-lead time in the city is:",["2-4 seconds","5-8 seconds","12-15 seconds","20-30 minutes"],"C"],
+["Minimum eye-lead time on a highway is:",["4 seconds","8 seconds","12-15 seconds","20-30 seconds or as far as you can see"],"D"],
+["Drivers should move their eyes approximately every:",["2 seconds","5 seconds","8 seconds","15 seconds"],"A"],
+["Exterior mirrors should normally be checked every:",["1-2 seconds","5-8 seconds","12-15 seconds","30 seconds"],"B"],
+["The standard intersection scan is:",["Right-left-right","Left-centre-right-left again","Mirrors only","Straight ahead only"],"B"],
+["Tire scanning can reveal:",["A vehicle beginning to move or turn","Its fuel level","Its driver identity","Its destination"],"A"],
+["The minimum following distance at 80 km/h and below is:",["2 seconds","3 seconds","4 seconds","8 seconds"],"C"],
+["Above 80 km/h, the minimum following distance is:",["4 seconds","5 seconds","6 seconds","10 seconds"],"C"],
+["\"Hover the brake\" means:",["Apply the spring brake","Position the foot over the brake for quick response","Pump the brakes","Rest the left foot on the brake"],"B"],
+["The decision point is the point where:",["The signal changes","You can no longer stop safely","The bus reaches the stop line","Control must be called"],"B"],
+["If unsure about a risk-management decision, choose:",["The faster option","The safer course","The popular option","No action"],"B"],
+["Risk avoidance is appropriate when:",["Personal risk to life or property is high","The schedule is late","Traffic is light","Customers request speed"],"A"],
+["At a stop-controlled intersection, stopping position is determined first by:",["The stop-sign pole","A clearly marked stop line","The nearest building","The curb colour"],"B"],
+["When merging onto a freeway, the operator should evaluate early, match speed, signal, merge smoothly, then:",["Stop","Re-adjust speed","Turn off lights","Change two more lanes"],"B"],
+["When waiting to turn left at a green light, enter the intersection; when it turns amber:",["Reverse","Roll forward and verify oncoming vehicles are stopping before committing","Turn immediately without checking","Remain forever"],"B"],
+["The four-point intersection plan is:",["Look, brake, turn, go","Know, show, slow, go","Scan, stop, signal, steer","Recognize, understand, act, report"],"B"]
+]},
+{name:"Defensive Driving Part 2", qs:[
+["Which list gives the six categories of driving conditions?",["Driver, light, weather, road, traffic, vehicle","Speed, lane, route, fare, stop, sign","Rain, snow, wind, fog, ice, sun","Driver, customer, garage, Control, road, route"],"A"],
+["In adverse light conditions, the operator should reduce speed, increase following distance, and:",["Overdrive headlights","Actively search for cyclists and pedestrians","Use high beams in fog","Follow road-edge lights closely"],"B"],
+["\"Overdriving your headlights\" means:",["Driving farther than the route","Driving too fast to stop within the illuminated distance","Using lights in daytime","Looking at oncoming lights"],"B"],
+["Roads are often most slippery:",["At the start of rainfall","After several dry hours","At noon","Only below freezing"],"A"],
+["In fog or rain, use:",["High beams","Low beams","Parking lights only","No lights"],"B"],
+["On a slippery road, accelerate after a turn only when:",["The front clears the curb","The whole bus is straight in its lane","The rear wheels enter the turn","The doors close"],"B"],
+["In winter, bridges and overpasses:",["Freeze later and thaw earlier","Freeze first and remain frozen longer","Never develop black ice","Are treated as dry roads"],"B"],
+["The winter-driving material specifies a minimum following distance of:",["4 seconds","6 seconds","8 seconds","12 seconds"],"C"],
+["The retarder should normally remain on except during:",["Rain","Extremely slippery ice or freezing rain","Highway travel","Night driving"],"B"],
+["The distraction-control model is:",["FADE","Focus, Select, Switch, Divide","ALERT","PASS"],"B"],
+["F.A.D.E. stands for:",["Fatigue, Alcohol, Drugs, Emotions","Focus, Attention, Driving, Escape","Fast, Alert, Defensive, Early","Fuel, Air, Doors, Engine"],"A"],
+["Before driving, the operator should conduct:",["A fare audit","A pre-trip mental inventory","A route vote","A customer survey"],"B"],
+["Before passing, ask whether the pass is necessary, safe, and:",["Fast","Legal","Popular","Scheduled"],"B"],
+["The four R's for avoiding a head-on collision are read the road, ride right, reduce speed, and:",["Reverse","Ride onto the shoulder","Race the other vehicle","Remain centred"],"B"],
+["A motorcyclist should be treated as:",["Half a vehicle","A full-size vehicle for space purposes","A pedestrian","A bicycle only"],"B"],
+["At night, an operator can improve the chance of seeing animals in time by:",["Overdriving the headlights","Using proper eye lead and reducing speed to the visible range","Looking only at the centre line","Accelerating past wooded areas"],"B"]
+]},
+{name:"Disturbances and Passenger Assistance Alarm", qs:[
+["The first listed response to a disturbance is to:",["Physically intervene","Contact Control with Priority MSG C","Put the bus out of service","Close all doors"],"B"],
+["If safe during a disturbance, the operator should:",["Remain in service and update Control","Evacuate everyone immediately","Leave the seat","Force the person off"],"A"],
+["If unsafe to continue, the operator should stop safely, remain in the seat, open all doors, and:",["Turn off the radio","Keep contact with Control","Lock customers in","Chase the person"],"B"],
+["The operator must not put the bus out of service or order customers off unless directed by:",["Any customer","An authorized official listed in the procedure","Another operator","A bystander"],"B"],
+["When a passenger activates the PAA, the operator sends:",["Priority MSG A","MSG 4","MSG 8","No message"],"A"],
+["After a PAA activation, the bus should remain parked until:",["The schedule catches up","Cleared to return to service","The next operator arrives","The buzzer stops"],"B"]
+]},
+{name:"Docket Familiarization", qs:[
+["A docket provides assignment information such as report time, route, route description, deadhead route, and:",["Customer medical records","Destination information","Maintenance history","Fare disputes"],"B"],
+["Platform time runs from scheduled garage departure until:",["The first service stop","Scheduled garage arrival, including recovery time","The last relief point only","The operator logs on"],"B"],
+["A relief point is:",["A fueling location","A location for changing operators on a route","A mandatory customer stop","A bus wash"],"B"],
+["A straight run has a minimum length of:",["4 hours","6 hours","7 hours 30 minutes","10 hours"],"C"],
+["A tripper normally covers:",["Only the AM or PM rush hour","Seven days continuously","Maintenance work","Only overnight service"],"A"],
+["Peak hours are usually:",["04:00-06:00 and 19:00-22:00","06:00-09:00 and 15:00-18:00 weekdays","Noon only","Weekends only"],"B"],
+["An interlined docket operates:",["One route only","Two or more different routes","No route","Only school service"],"B"],
+["A short turn:",["Always goes to the end of line","Ends at a designated point before the end, often with X after the route number","Is a left turn","Is a deadhead"],"B"],
+["A timepoint is used to help the operator:",["Maintain scheduled timing","Report defects","Sell PRESTO cards","Test the EA"],"A"],
+["A school trip is designed primarily for students, but:",["Other customers may also use it","It never carries the public","It has no schedule","It is always free"],"A"],
+["A work bus primarily transports:",["Tourists","Late-night employees home and early-morning employees to the depot","Maintenance parts","School students"],"B"],
+["Before departing the garage, a work-bus operator must report to:",["A customer","A Dispatcher","Planning","Police"],"B"],
+["Work-bus operators should remain on:",["Any shortcut","Designated bus routes when picking up or dropping off operators","Highways only","Private roads"],"B"],
+["When waiting at St. Laurent Garage, the work bus should park:",["In front of garage doors","Along the east curb","In any no-parking zone","At a fuel pump"],"B"]
+]},
+{name:"Emergency Procedures", qs:[
+["Bus fire extinguishers are intended for which fire classes?",["A only","A and B only","A, B, and C","D only"],"C"],
+["When using a portable extinguisher, PASS means:",["Pull, Aim, Squeeze, Sweep","Park, Alarm, Stop, Secure","Point, Alert, Signal, Stop","Pull, Ask, Spray, Step"],"A"],
+["When approaching a fire to use an extinguisher, position yourself:",["Downwind","Upwind with an escape route","Behind the fire","In smoke"],"B"],
+["The correct first priority in any bus fire is to:",["Save the schedule","Protect life and evacuate as needed","Recover fares","Photograph the fire"],"B"],
+["Which situation clearly requires evacuation?",["A syringe found with no exposure","Flames and smoke from the rear of the bus","A routine delay","A printer jam"],"B"],
+["If a collision brings down a hydro pole and wires surround the bus, the operator should generally:",["Tell everyone to step onto the road","Keep people on the bus unless fire or another immediate danger requires evacuation, and contact emergency help","Touch the wires","Move the wires"],"B"],
+["When informing customers during evacuation, instructions should identify:",["Only that there is a delay","Which exits to use and a specific safe assembly location","The fare amount","The next trip"],"B"],
+["After stopping for an evacuation, the operator should secure the bus, contact Control, open exits, evacuate to safety, and:",["Search the bus if safe","Leave immediately without checking","Restart service","Collect fares"],"A"]
+]},
+{name:"Fare Structure", qs:[
+["Under the supplied fare material, children travel free at age:",["10 and under","11 and under","12 and under","6 and under"],"A"],
+["A pre-teen discounted PRESTO fare applies to ages:",["6-10","10-11","11-12","12-15"],"C"],
+["A customer aged 11-12 paying cash must pay:",["Nothing","The discounted PRESTO rate","The full cash fare","Senior fare"],"C"],
+["PRESTO e-Purse:",["Deducts partial fares","Requires enough value for the full fare","Is accepted by any system for deduction","Never creates POP"],"B"],
+["O-Payment accepts eligible credit cards or mobile wallets for:",["Adult fare only","Any concession fare","DayPass purchase","STO e-Purse"],"A"],
+["An OC PRESTO pass or POP can be validated on STO, but OC e-Purse:",["Is always deducted by STO","Cannot be deducted by the other system","Becomes cash","Buys a DayPass automatically"],"B"],
+["To buy a DayPass with PRESTO, the customer must tell the operator before tapping; the operator then:",["Presses the top-row DayPass key and asks the customer to tap","Presses the cash key","Tells them to tap twice","Issues it after 22:30"],"A"],
+["The DayPass action times out after:",["2 seconds","5 seconds","10 seconds","30 seconds"],"B"],
+["A DayPass may be used by two customers age 11+ on weekends, statutory holidays, and specified school holiday periods. True or False?",["True","False"],"A"],
+["If a PRESTO reader on the bus is not working, the expectation chart says to:",["Request cash from everyone","Allow boarding and do not issue POP","Confiscate cards","Put the bus out of service immediately"],"B"],
+["If \"Card Error\" repeats on the second tap, the operator should:",["Request fare and eject the customer","Allow boarding and do not issue POP","Confiscate the card","Issue cash"],"B"],
+["Fare disputes should be handled by politely informing the customer once, allowing boarding, and:",["Physically enforcing payment","Contacting Control for assistance","Taking the fare product","Arguing until paid"],"B"],
+["Operators should confiscate altered, fake, or expired fare products. True or False?",["True","False"],"B"],
+["If the fare box jams or printer fails, the operator should place an out-of-order sticker and:",["Send MSG 4","Send MSG 5 to Control","End the run","Charge twice later"],"B"]
+]},
+{name:"Hours of Service", qs:[
+["For OC and Para Transpo operators, the regulatory day begins at:",["00:00","04:00","06:00","23:30"],"B"],
+["The daily limits are a maximum of 13 hours driving, 14 hours on duty, and at least:",["8 total hours off","10 hours off, including 8 consecutive","12 consecutive hours off","24 hours off"],"B"],
+["After a shift begins, no driving is allowed after:",["13 elapsed hours in all cases","14 elapsed hours in all cases","16 elapsed hours, except the stated emergency allowance","24 elapsed hours"],"C"],
+["The work-cycle maximum and reset are:",["60 hours/7 days; 24-hour reset","70 hours/7 days; 36-hour reset","80 hours/14 days; 8-hour reset","100 hours/7 days; 48-hour reset"],"B"],
+["When approaching a violation, contact Control 60 minutes beforehand and send:",["MSG 4","MSG 5","MSG +8 with location and projected violation time","Priority MSG A"],"C"]
+]},
+{name:"Service Stops", qs:[
+["The three main stages of a service stop are:",["Signal, kneel, leave","Approach, stop, departure","Scan, brake, park","Locate, board, report"],"B"],
+["When approaching a stop, which is a valid concern?",["Parked cars, customers, obstructions, snowbanks, and road conditions","Only the bus flag","Only the schedule","Only traffic behind"],"A"],
+["In a tight turn, rear swing may be as much as:",["6 inches","1 foot","2 feet","4 feet"],"C"],
+["The right mirror may extend:",["Less than one inch","More than one foot beyond the bus side","Only to the curb line","Behind the rear door only"],"B"],
+["If a pole threatens the right mirror, the bus flag should be treated as:",["An exact stopping point","A guide; keep space and stop early if needed","A signal to mount the curb","A reason to skip the stop"],"B"],
+["If a stop is unsafe because of an obstruction, the operator should explain, report it using MSG 9, and:",["Discharge at the closest safe location","Force customers into the obstruction","Continue indefinitely","Use MSG 4"],"A"],
+["Customers must never be discharged:",["Near a driveway","Into a snowbank","At an alternate safe point","After kneeling"],"B"],
+["Slowing for a service stop should be:",["Abrupt","Gradual, smooth, and one continuous motion","Delayed until the flag","Done with the spring brake"],"B"],
+["A signal is required when pulling into a stop only if:",["Customers are waiting","Changing lanes","The bus is late","The curb is high"],"B"],
+["At most ordinary service stops, the specialized brake that must be used is:",["Foot brake only","Interlock","Retarder only","Parking brake only"],"B"],
+["Before departing, the minimum mirror scan is:",["Left only","Right-left-right again, with the full prescribed scan beginning inside","Right only","Mirrors are unnecessary"],"B"],
+["A left signal to leave a bus bay should be activated:",["As soon as the doors open","Only when ready to re-enter traffic","Before customers exit","Even if the bus will remain parked"],"B"],
+["Even under the yield-to-bus law, the operator must remember:",["Right of way is taken","Right of way is given, not taken","All vehicles always stop","Multiple lane changes are protected"],"B"]
+]}
+];
+/* ============ END DATA ============ */
+
+// Flatten with sequential question numbers
+const QUESTIONS = [];
+CHAPTERS.forEach((c,ci)=>{c.id=ci;c.ids=[];c.qs.forEach(q=>{
+  const n=QUESTIONS.length+1;
+  QUESTIONS.push({n,ch:ci,q:q[0],o:q[1],a:"ABCD".indexOf(q[2])});
+  c.ids.push(n);
+});});
+const LET="ABCD";
+const $=s=>document.querySelector(s);
+const app=$("#app");
+
+/* ============ STORAGE ============ */
+const K={sess:"octq_session_v1",hist:"octq_history_v1",stats:"octq_qstats_v1"};
+const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const del=k=>{try{localStorage.removeItem(k)}catch(e){}};
+
+let sess=load(K.sess,null);   // in-progress quiz
+let setup={mode:"full",chapters:[],count:25,shuffle:false,instant:true};
+
+/* ============ HELPERS ============ */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+const qById=n=>QUESTIONS[n-1];
+const level=p=>p<60?"hi":p<80?"md":"lo";
+const levelTxt={hi:"Study first",md:"Review",lo:"Looking good"};
+
+function recordStats(id,correct){
+  const s=load(K.stats,{});
+  const r=s[id]||{a:0,w:0};r.a++;if(!correct)r.w++;s[id]=r;save(K.stats,s);
+}
+function chapterStats(){
+  const s=load(K.stats,{});
+  return CHAPTERS.map(c=>{let a=0,w=0;c.ids.forEach(id=>{if(s[id]){a+=s[id].a;w+=s[id].w}});return{a,w}});
+}
+
+/* ============ HOME ============ */
+function home(){
+  $("#homeBtn").classList.add("hidden");
+  const cs=chapterStats();
+  const modeBtn=(m,t,d)=>`<button class="mode ${setup.mode===m?"on":""}" data-mode="${m}"><b>${t}</b><span class="muted">${d}</span></button>`;
+  let h="";
+  if(sess){
+    const done=Object.keys(sess.answers).length;
+    h+=`<div class="card"><h2>Quiz in progress</h2>
+    <p class="muted">${esc(sess.label)}: ${done} of ${sess.ids.length} answered.</p>
+    <div class="row"><button class="btn" id="resume">Resume</button><button class="btn sec" id="discard">Discard</button></div></div>`;
+  }
+  h+=`<div class="card"><h2>Start a quiz</h2>
+  <p class="muted">${QUESTIONS.length} questions across ${CHAPTERS.length} chapters. Your progress is saved in this browser only.</p>
+  <div class="modes">
+    ${modeBtn("full","Entire quiz",`All ${QUESTIONS.length} questions`)}
+    ${modeBtn("chapter","By chapter","Pick one or more chapters")}
+    ${modeBtn("random","Random questions","A random set from all chapters")}
+  </div>`;
+  if(setup.mode==="chapter"){
+    h+=`<div class="row" style="margin-bottom:4px"><button class="btn sec" id="allCh" style="padding:6px 12px;font-size:.85rem">Select all</button><button class="btn sec" id="noCh" style="padding:6px 12px;font-size:.85rem">Clear</button></div><div class="chlist">`;
+    CHAPTERS.forEach((c,i)=>{
+      const st=cs[i];const p=st.a?pct(st.a-st.w,st.a):null;
+      h+=`<label><input type="checkbox" class="chk" value="${i}" ${setup.chapters.includes(i)?"checked":""}>
+      <span>${i+1}. ${esc(c.name)} <span class="muted">(${c.ids.length})</span></span>
+      <span class="st">${p===null?"not attempted":p+"% all-time"}</span></label>`;
+    });
+    h+=`</div>`;
+  }
+  if(setup.mode==="random"){
+    h+=`<div class="row" style="margin:8px 0"><label for="cnt">Number of questions:</label>
+    <select id="cnt">${[10,20,25,50,75,100].map(n=>`<option ${setup.count===n?"selected":""}>${n}</option>`).join("")}</select></div>`;
+  }
+  if(setup.mode!=="random"){
+    h+=`<div class="sw"><input type="checkbox" id="shuf" ${setup.shuffle?"checked":""}><label for="shuf">Shuffle question order</label></div>`;
+  }
+  h+=`<div class="sw"><input type="checkbox" id="inst" ${setup.instant?"checked":""}><label for="inst">Show correct answer after each question</label></div>
+  <button class="btn" id="start" ${setup.mode==="chapter"&&!setup.chapters.length?"disabled":""}>Start</button></div>`;
+
+  // all-time weak spots
+  const att=cs.some(c=>c.a);
+  if(att){
+    const rows=CHAPTERS.map((c,i)=>({c,i,st:cs[i]})).filter(r=>r.st.a).map(r=>({...r,p:pct(r.st.a-r.st.w,r.st.a)})).sort((a,b)=>a.p-b.p);
+    h+=`<div class="card"><h3>Your all-time results by chapter</h3><p class="muted" style="margin-top:0">Based on every question you've answered in this browser, weakest first.</p>`;
+    rows.forEach(r=>{h+=`<div class="chrow"><div class="top"><span>${r.i+1}. ${esc(r.c.name)}</span><span class="pill ${level(r.p)}">${r.p}%</span></div><div class="bar"><i style="width:${r.p}%"></i></div></div>`});
+    h+=`<div class="row" style="margin-top:12px"><button class="btn sec" id="weak">Quiz me on my most-missed questions</button><button class="btn sec" id="reset">Reset all saved data</button></div></div>`;
+  }
+  const hist=load(K.hist,[]);
+  if(hist.length){
+    h+=`<div class="card"><h3>Recent attempts</h3>`;
+    hist.slice(0,8).forEach(a=>{h+=`<div class="chrow"><div class="top"><span>${esc(a.label)}</span><b>${a.correct}/${a.total} (${pct(a.correct,a.total)}%)</b></div><span class="muted" style="font-size:.85rem">${new Date(a.date).toLocaleString()}</span></div>`});
+    h+=`</div>`;
+  }
+  app.innerHTML=h;
+
+  document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{setup.mode=b.dataset.mode;home()});
+  document.querySelectorAll(".chk").forEach(c=>c.onchange=()=>{
+    setup.chapters=[...document.querySelectorAll(".chk:checked")].map(x=>+x.value);
+    $("#start").disabled=!setup.chapters.length;
+  });
+  const on=(id,f)=>{const e=$(id);if(e)e.onclick=f};
+  on("#allCh",()=>{setup.chapters=CHAPTERS.map((_,i)=>i);home()});
+  on("#noCh",()=>{setup.chapters=[];home()});
+  const cnt=$("#cnt");if(cnt)cnt.onchange=()=>setup.count=+cnt.value;
+  const shuf=$("#shuf");if(shuf)shuf.onchange=()=>setup.shuffle=shuf.checked;
+  $("#inst").onchange=e=>setup.instant=e.target.checked;
+  on("#start",startQuiz);
+  on("#resume",()=>quiz());
+  on("#discard",()=>{if(confirm("Discard the quiz in progress?")){sess=null;del(K.sess);home()}});
+  on("#weak",startWeak);
+  on("#reset",()=>{if(confirm("This deletes your saved history and stats from this browser. Continue?")){del(K.hist);del(K.stats);del(K.sess);sess=null;home()}});
+}
+
+/* ============ START ============ */
+function begin(ids,label){
+  sess={label,ids,idx:0,answers:{},instant:setup.instant,started:Date.now()};
+  save(K.sess,sess);quiz();
+}
+function startQuiz(){
+  if(sess&&!confirm("Starting a new quiz will replace the one in progress. Continue?"))return;
+  let ids,label;
+  if(setup.mode==="full"){ids=QUESTIONS.map(q=>q.n);label="Entire quiz";if(setup.shuffle)ids=shuffle(ids)}
+  else if(setup.mode==="chapter"){
+    const chs=setup.chapters.slice().sort((a,b)=>a-b);
+    ids=chs.flatMap(i=>CHAPTERS[i].ids);
+    label=chs.length===1?`Chapter ${chs[0]+1}: ${CHAPTERS[chs[0]].name}`:`${chs.length} chapters`;
+    if(setup.shuffle)ids=shuffle(ids);
+  } else {
+    ids=shuffle(QUESTIONS.map(q=>q.n)).slice(0,setup.count);label=`Random ${setup.count}`;
+  }
+  begin(ids,label);
+}
+function startWeak(){
+  const s=load(K.stats,{});
+  const ids=Object.keys(s).filter(k=>s[k].w>0).map(Number).sort((a,b)=>s[b].w/s[b].a-s[a].w/s[a].a||s[b].w-s[a].w).slice(0,25);
+  if(!ids.length){alert("No missed questions yet.");return}
+  if(sess&&!confirm("Starting a new quiz will replace the one in progress. Continue?"))return;
+  begin(shuffle(ids),"Most-missed questions");
+}
+
+/* ============ QUIZ ============ */
+let pending=null; // selected-but-unchecked answer when instant mode
+function quiz(){
+  $("#homeBtn").classList.remove("hidden");
+  const id=sess.ids[sess.idx];const q=qById(id);
+  const answered=sess.answers[id]!==undefined;
+  const sel=answered?sess.answers[id]:pending;
+  const total=sess.ids.length;
+  const showFb=answered&&sess.instant;
+  let h=`<div class="card">
+  <div class="qmeta"><span>${esc(sess.label)}</span><span>Question ${sess.idx+1} of ${total}</span></div>
+  <div class="bar"><i style="width:${Math.round(Object.keys(sess.answers).length/total*100)}%"></i></div>
+  <div class="qmeta" style="margin-top:12px"><span>Ch. ${q.ch+1}: ${esc(CHAPTERS[q.ch].name)}</span><span>Q${q.n}</span></div>
+  <div class="qtext">${esc(q.q)}</div>`;
+  q.o.forEach((t,i)=>{
+    let cls="opt";
+    if(showFb){if(i===q.a)cls+=" right";else if(i===sel)cls+=" wrong"}
+    else if(i===sel)cls+=" sel";
+    h+=`<button class="${cls}" data-i="${i}" ${(showFb||(answered&&!sess.instant&&false))?"disabled":""}><span class="l">${LET[i]}.</span><span>${esc(t)}</span></button>`;
+  });
+  if(showFb){
+    const ok=sel===q.a;
+    h+=`<div class="fb ${ok?"ok":"no"}">${ok?"Correct!":"Incorrect. The correct answer is "+LET[q.a]+". "+esc(q.o[q.a])}</div>`;
+  }
+  h+=`<div class="row" style="margin-top:14px;justify-content:space-between">
+    <button class="btn sec" id="prev" ${sess.idx===0?"disabled":""}>Back</button>`;
+  const last=sess.idx===total-1;
+  if(sess.instant&&!answered){
+    h+=`<button class="btn" id="check" ${sel===null||sel===undefined?"disabled":""}>Check answer</button>`;
+  } else if(last){
+    h+=`<button class="btn" id="finish">Finish &amp; see results</button>`;
+  } else {
+    h+=`<button class="btn" id="next" ${answered?"":"disabled"}>Next</button>`;
+  }
+  h+=`</div><div class="hint">Tip: press A–D to choose, Enter to continue.</div></div>`;
+  app.innerHTML=h;
+  window.scrollTo(0,0);
+
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>choose(+b.dataset.i));
+  const on=(i,f)=>{const e=$(i);if(e)e.onclick=f};
+  on("#prev",()=>{sess.idx--;pending=null;save(K.sess,sess);quiz()});
+  on("#next",()=>{sess.idx++;pending=null;save(K.sess,sess);quiz()});
+  on("#check",()=>commit(pending));
+  on("#finish",finish);
+}
+function choose(i){
+  const id=sess.ids[sess.idx];
+  if(sess.answers[id]!==undefined&&sess.instant)return;
+  if(sess.instant){pending=i;quiz()}
+  else{ // no instant feedback: record immediately (can change before moving on)
+    sess.answers[id]=i;save(K.sess,sess);quiz();
+  }
+}
+function commit(i){
+  if(i===null||i===undefined)return;
+  const id=sess.ids[sess.idx];
+  sess.answers[id]=i;pending=null;save(K.sess,sess);quiz();
+}
+document.addEventListener("keydown",e=>{
+  if(!sess||!$(".qtext"))return;
+  if(e.target.tagName==="SELECT"||e.target.tagName==="INPUT")return;
+  const k=e.key.toUpperCase();const q=qById(sess.ids[sess.idx]);
+  if(k.length===1&&LET.includes(k)&&LET.indexOf(k)<q.o.length){choose(LET.indexOf(k))}
+  else if(e.key==="Enter"){const b=$("#check")||$("#next")||$("#finish");if(b&&!b.disabled)b.click()}
+  else if(e.key==="ArrowLeft"){const b=$("#prev");if(b&&!b.disabled)b.click()}
+});
+
+/* ============ RESULTS ============ */
+function finish(){
+  const unanswered=sess.ids.filter(id=>sess.answers[id]===undefined).length;
+  if(unanswered&&!confirm(`${unanswered} question(s) unanswered. They'll be counted as incorrect. Finish anyway?`))return;
+  const res=sess.ids.map(id=>{const q=qById(id);const a=sess.answers[id];return{q,a,ok:a===q.a}});
+  res.forEach(r=>recordStats(r.q.n,r.ok));
+  const correct=res.filter(r=>r.ok).length;
+  const hist=load(K.hist,[]);
+  hist.unshift({date:Date.now(),label:sess.label,total:res.length,correct});
+  save(K.hist,hist.slice(0,30));
+  const result={label:sess.label,res,correct};
+  sess=null;del(K.sess);
+  results(result);
+}
+function results(r){
+  $("#homeBtn").classList.remove("hidden");
+  const total=r.res.length;const p=pct(r.correct,total);
+  const byCh={};
+  r.res.forEach(x=>{const c=byCh[x.q.ch]||(byCh[x.q.ch]={t:0,w:0,missed:[]});c.t++;if(!x.ok){c.w++;c.missed.push(x.q.n)}});
+  const rows=Object.entries(byCh).map(([ch,v])=>({ch:+ch,...v,p:pct(v.t-v.w,v.t)})).sort((a,b)=>a.p-b.p||b.w-a.w);
+  const need=rows.filter(x=>x.w>0);
+  let h=`<div class="card"><p class="muted" style="margin:0">${esc(r.label)}</p>
+  <div class="score">${r.correct} / ${total}</div><h2 style="margin-top:6px">${p}%</h2>
+  <p class="muted" style="margin-bottom:0">${p>=80?"Strong result. Keep sharpening the weak spots below.":p>=60?"Decent, but there's room to improve.":"More study needed. Focus on the chapters below."}</p></div>`;
+
+  h+=`<div class="card"><h3>Chapters to study</h3>`;
+  if(!need.length)h+=`<p>Perfect score. No chapters need extra study.</p>`;
+  else{
+    h+=`<p class="muted" style="margin-top:0">Ranked by the share of questions you missed in this attempt.</p>`;
+    need.forEach(x=>{const lv=level(x.p);
+      h+=`<div class="chrow"><div class="top"><span><b>Ch. ${x.ch+1}: ${esc(CHAPTERS[x.ch].name)}</b></span><span class="pill ${lv}">${levelTxt[lv]}</span></div>
+      <div class="bar"><i style="width:${x.p}%"></i></div>
+      <div class="muted" style="font-size:.88rem;margin-top:4px">${x.t-x.w} of ${x.t} correct (${x.p}%). Missed: ${x.missed.map(n=>"Q"+n).join(", ")}</div></div>`});
+  }
+  const good=rows.filter(x=>x.w===0);
+  if(good.length)h+=`<p class="muted" style="margin-bottom:0">No misses in: ${good.map(x=>"Ch. "+(x.ch+1)).join(", ")}.</p>`;
+  h+=`</div>`;
+
+  const wrong=r.res.filter(x=>!x.ok);
+  h+=`<div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Review missed questions (${wrong.length})</h3></div>`;
+  if(!wrong.length)h+=`<p>Nothing to review.</p>`;
+  wrong.forEach(x=>{
+    h+=`<div class="rev"><div class="muted" style="font-size:.8rem">Q${x.q.n} · Ch. ${x.q.ch+1}: ${esc(CHAPTERS[x.q.ch].name)}</div>
+    <div style="font-weight:600;margin:2px 0">${esc(x.q.q)}</div>
+    <div class="a" style="color:var(--bad)">Your answer: ${x.a===undefined?"(none)":LET[x.a]+". "+esc(x.q.o[x.a])}</div>
+    <div class="a" style="color:var(--ok)">Correct: ${LET[x.q.a]}. ${esc(x.q.o[x.q.a])}</div></div>`;
+  });
+  h+=`</div><div class="row">`;
+  if(wrong.length)h+=`<button class="btn" id="retry">Retry missed questions</button>`;
+  h+=`<button class="btn sec" id="again">Back to home</button></div>`;
+  app.innerHTML=h;window.scrollTo(0,0);
+  const on=(i,f)=>{const e=$(i);if(e)e.onclick=f};
+  on("#again",home);
+  on("#retry",()=>begin(shuffle(wrong.map(x=>x.q.n)),"Retry: missed questions"));
+}
+
+$("#homeBtn").onclick=()=>{
+  if(sess&&$(".qtext")){/* progress is already saved; just leave */}
+  pending=null;home();
+};
+home();
+</script>
+</body>
+</html>
